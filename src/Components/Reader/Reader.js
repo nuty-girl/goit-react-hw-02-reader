@@ -16,29 +16,29 @@ export default class Reader extends Component {
     ),
   };
 
-  static defaultProps = { items: [] };
+  static defaultProps = {
+    items: [],
+  };
 
-  state = { publicationId: 1 };
-
-  item = this.props.items.find(
-    i => this.props.items.indexOf(i) + 1 === this.state.publicationId,
-  );
+  state = { indexPublication: 0 };
 
   handleIncrement = () => {
     this.setState(prevState => ({
-      publicationId: prevState.publicationId + 1,
+      indexPublication:
+        prevState < this.props.items.lenght && prevState.indexPublication + 1,
     }));
   };
 
   handleDecrement = () => {
     this.setState(prevState => ({
-      publicationId: prevState.publicationId - 1,
+      indexPublication: prevState > 1 && prevState.indexPublication - 1,
     }));
   };
 
   render() {
-    const { publicationId } = this.state;
+    const { indexPublication } = this.state;
     const { items } = this.props;
+    const item = items[indexPublication];
     return (
       <div className={styles.reader}>
         <Controls
@@ -46,14 +46,14 @@ export default class Reader extends Component {
           onIncrement={this.handleIncrement}
         />
         <Counter
-          publicationId={publicationId}
+          indexPublication={indexPublication}
           publicationQuantity={items.lenght}
         />
         <Publication
-          key={this.item.id}
-          publicationId={publicationId}
-          title={this.item.title}
-          text={this.item.text}
+          key={item.id}
+          indexPublication={indexPublication}
+          title={item.title}
+          text={item.text}
         />
       </div>
     );
