@@ -1,4 +1,4 @@
-import { React, Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Reader.module.css';
 import Controls from '../Controls/Controls';
@@ -22,38 +22,43 @@ export default class Reader extends Component {
 
   state = { indexPublication: 0 };
 
-  handleIncrement = () => {
+  handleNextPublication = () => {
     this.setState(prevState => ({
-      indexPublication:
-        prevState < this.props.items.lenght && prevState.indexPublication + 1,
+      indexPublication: prevState.indexPublication + 1,
     }));
   };
 
-  handleDecrement = () => {
+  handlePrevPublication = event => {
+    event.preventDefault();
     this.setState(prevState => ({
-      indexPublication: prevState > 1 && prevState.indexPublication - 1,
+      indexPublication: prevState.indexPublication - 1,
     }));
   };
 
   render() {
     const { indexPublication } = this.state;
     const { items } = this.props;
+    const publicationQuantity = items.reduce(
+      (acc, item) => 1 + items.indexOf(item),
+      0,
+    );
     const item = items[indexPublication];
+
     return (
       <div className={styles.reader}>
         <Controls
-          onDecrement={this.handleDecrement}
-          onIncrement={this.handleIncrement}
+          onDecrement={this.handlePrevPublication}
+          onIncrement={this.handleNextPublication}
+          indexPublication={indexPublication + 1}
+          publicationQuantity={publicationQuantity}
         />
         <Counter
-          indexPublication={indexPublication}
-          publicationQuantity={items.lenght}
+          indexPublication={indexPublication + 1}
+          publicationQuantity={publicationQuantity}
         />
         <Publication
-          key={item.id}
-          indexPublication={indexPublication}
-          title={item.title}
-          text={item.text}
+          publication={item}
+          indexPublication={indexPublication + 1}
         />
       </div>
     );
